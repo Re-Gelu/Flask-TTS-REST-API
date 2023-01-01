@@ -1,0 +1,11 @@
+Flask
+Flask-Migrate
+Flask-SQLAlchemy
+Flask-Limiter
+flask-restful
+flask-debugtoolbar
+art
+chardet
+PyPDF2
+pyttsx3
+pathlib

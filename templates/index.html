@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Title -->
+        <title>{% block title %}Base{% endblock title %}</title>
+
+        <!-- Site icon -->
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='/images/favcon.png') }}">
+
+        <!-- UIkit CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='/css/UIkit/uikit.min.css') }}" />
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='/css/bootstrap/bootstrap.min.css') }}">
+
+        <!-- CSS -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/styles.css') }}">
+
+        <!-- CSS icons -->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/themify-icons.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/bootstrap-icons.css') }}">
+
+        <!-- Fonts -->
+        <link href="{{ url_for('static', filename='/fonts/fonts.css') }}" rel="stylesheet">
+
+        <!-- Jquery JS -->
+        <script src="{{ url_for('static', filename='/js/jquery/jquery-3.6.1.js') }}"></script>
+
+        <!-- CSRF token -->
+        <script> var csrf_token = '{{ request.cookies.csrftoken }}'; </script>
+
+        <!-- UIkit JS -->
+        <script src="{{ url_for('static', filename='/js/UIkit/uikit.min.js') }}" async></script>
+        <script src="{{ url_for('static', filename='/js/UIkit/uikit-icons.min.js') }}" async></script>
+
+        <!-- Bootstrap JS -->
+        <script src="{{ url_for('static', filename='/js/bootstrap/bootstrap.bundle.min.js') }}" async></script>
+    </head>
+
+    <body>
+
+        <!-- Header --> 
+        <header id="header" class="navbar navbar-expand-xl sticky-top">    
+            <nav class="container-fluid">
+
+                <!-- Left header block - Logo -->
+                <a href="/" class="navbar-brand logo ms-3">Base</a>
+
+                <!-- Navbar toggler -->
+                <button type="button" class="navbar-toggler text-black" data-bs-toggle="collapse"
+                data-bs-target="#navbar-menu" aria-controls="navbar-menu" 
+                aria-expanded="false" aria-label="Переключатель навигации">
+                    <span class="ti-menu"></span>
+                </button>
+
+                <!-- Navigation menu -->
+                <div id="navbar-menu" class="navbar-collapse collapse">
+
+                    <hr class="d-xl-none border-top-colored"> 
+
+                    <ul class="navbar-nav top-nav-menu me-auto d-inline-flex">
+                        <li class="nav-item px-4">
+                            <a class="nav-link text-reset uk-button-text" aria-current="page" href="/">Домой</a>
+                        </li>
+                
+                    </ul>
+
+                    <hr class="d-xl-none border-top-colored">
+
+                </div>
+            </nav>
+        </header>
+
+        <!-- Wrapper -->
+        <div id="wrapper" class="container-fluid">
+
+            <!-- Wrapper content -->
+            <div class="container">
+                {% block content %}
+                    <pre>{{context.csrf_token}}</pre>
+                {% endblock content %}
+            </div>
+
+            <!-- Back to top button -->
+            <a id="btn-back-to-top" href="#" type="button" class="btn btn-light position-fixed" uk-totop uk-scroll></a>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="container text-center my-5">
+
+            <div class="row justify-content-center h-100">
+                <div class="col-5 my-auto p-0">
+                    <hr class="text-black-50 my-0">
+                </div>
+
+                <div class="col-auto my-auto">
+                    <span class="ti-control-record fs-3 opacity-25 my-0"></span>
+                </div>
+
+                <div class="col-5 my-auto p-0">
+                    <hr class="text-black-50 my-0">
+                </div>	
+            </div>
+
+            <div class="mt-4">© 2022 Base - Видео-чат на Django</div>
+            <sub class="text-colored float-end pt-4 pb-5 d-inline-flex">made by Re;Gelu
+                <div class="waves-container mx-3">
+                    <div class="wave" style="--i: 1"></div>
+                    <div class="wave" style="--i: 2"></div>
+                    <div class="wave" style="--i: 3"></div>
+                    <div class="wave" style="--i: 4"></div>
+                    <div class="wave" style="--i: 5"></div>
+                    <div class="wave" style="--i: 6"></div>
+                    <div class="wave" style="--i: 7"></div>
+                    <div class="wave" style="--i: 8"></div>
+                    <div class="wave" style="--i: 9"></div>
+                    <div class="wave" style="--i: 10"></div>
+                    <div class="wave" style="--i: 11"></div>
+                    <div class="wave" style="--i: 12"></div>
+                    <div class="wave" style="--i: 13"></div>
+                    <div class="wave" style="--i: 14"></div>
+                    <div class="wave" style="--i: 15"></div>
+                    <div class="wave" style="--i: 16"></div>
+                    <div class="wave" style="--i: 17"></div>
+                    <div class="wave" style="--i: 18"></div>
+                    <div class="wave" style="--i: 19"></div>
+                    <div class="wave" style="--i: 20"></div>
+                </div>
+            </sub>
+        </footer>
+
+    </body>
+
+</html>
