@@ -29,73 +29,59 @@ class TextToVoice:
         if voice_id:
             self.voice_id = voice_id
         
-    def get_text_from_pdf_file(self) -> str:
-        """Get the text from a PDF file
-
-        Raises:
-            Exception: If file is not a PDF file
-            Exception: If file path not found or not exsists
-
-        Returns:
-            str: text from the PDF file
-        """        
-        if self.__file_path:
-            
-            # Работа с PDF форматом
-            if Path(self.__file_path).suffix == ".pdf":
-
-                # Чтение файла
-                with open(self.__file_path, "rb") as filehandle:
-                    pdf = PdfFileReader(filehandle)
-
-                    self.pdf_document_info = pdf.getDocumentInfo()
-
-                    self.text = ""
-
-                    for page_number in range(pdf.numPages):
-                        pdf_page = pdf.getPage(page_number)
-                        self.text += pdf_page.extract_text()
-
-                self.text = self.text.replace("\n", " ")
-                
-                return self.text
-            else: 
-                raise Exception('File is not a PDF file!')
-        else:
-            raise Exception('File path not found or not exsists! Try to change `file_path` variable.')
-        
     def get_text_from_file(self) -> str:
-        """Get the text from a TXT or RTF file
+        """Get the text from the text file
 
         Raises:
-            Exception: If file is not a TXT or RTF file
+            Exception: If file is not a PDF, TXT or RTF file
             Exception: If file path not found or not exsists
 
         Returns:
             str: text from the file
         """        
         if self.__file_path:
-    
-            # Работа с TXT и RTF форматом
-            if Path(self.__file_path).suffix == ".txt" or Path(self.__file_path).suffix == ".rtf":
+            
+            match Path(self.__file_path).suffix:
+                
+                case ".txt" | ".rtf":
+                    # Определение кодировки
+                    detector = UniversalDetector()
+                    with open(self.__file_path, 'rb') as fh:
+                        for line in fh:
+                            detector.feed(line)
+                            if detector.done:
+                                break
+                        detector.close()
 
-                # Определение кодировки
-                detector = UniversalDetector()
-                with open(self.__file_path, 'rb') as fh:
-                    for line in fh:
-                        detector.feed(line)
-                        if detector.done:
-                            break
-                    detector.close()
+                    # Чтение файла
+                    with open(self.__file_path, "r", encoding=detector.result['encoding']) as filehandle:
+                        self.text = filehandle.read()
+                    self.text = self.text.replace("\n", " ")
 
-                # Чтение файла
-                with open(self.__file_path, "r", encoding=detector.result['encoding']) as filehandle:
-                    self.text = filehandle.read()
-                self.text = self.text.replace("\n", " ")
+                    return self.text
+                
+                case ".pdf":
+                    # Работа с PDF форматом
 
-                return self.text
-            else:
-                raise Exception('File is not a txt or rtf file!')
+                    # Чтение файла
+                    with open(self.__file_path, "rb") as filehandle:
+                        pdf = PdfFileReader(filehandle)
+
+                        self.pdf_document_info = pdf.getDocumentInfo()
+
+                        self.text = ""
+
+                        for page_number in range(pdf.numPages):
+                            pdf_page = pdf.getPage(page_number)
+                            self.text += pdf_page.extract_text()
+
+                    self.text = self.text.replace("\n", " ")
+
+                    return self.text
+                
+                case _:
+                    raise Exception('File format not supported!')
+            
         else:
             raise Exception('File path not found or not exsists! Try to change `file_path` variable.')
         
