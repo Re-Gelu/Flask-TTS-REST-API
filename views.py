@@ -1,6 +1,7 @@
 from flask_restful import Resource
 from flask import request, jsonify, render_template
 from .app import app
+from .tasks import *
 
 @app.route('/')
 def index():
@@ -14,6 +15,14 @@ class HelloWorld(Resource):
         print(app.url_map)
         return jsonify(["hello world"])
     
+
+class TaskRunnerView(Resource):
+
+    def post(self):
+        content = request.json
+        task_type = content["type"]
+        task = create_task.delay(int(task_type))
+        return jsonify({"task_id": task.id})
 
 todos = {}
 

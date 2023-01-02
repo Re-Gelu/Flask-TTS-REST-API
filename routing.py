@@ -3,3 +3,4 @@ from .views import *
 
 api.add_resource(HelloWorld, '/api')
 api.add_resource(TodoSimple, '/api/todo/<string:todo_id>/')
+api.add_resource(TaskRunnerView, '/api/tasks')

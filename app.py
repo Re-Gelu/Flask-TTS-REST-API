@@ -16,8 +16,8 @@ app.config.from_object(os.getenv('FLASK_ENV') or 'config.DevelopementConfig')
 # Celery app
 celery = Celery(
     app.name,
-    broker=os.environ.get("REDIS_URL", default=app.config.get('REDIS_URL')),
-    backend=os.environ.get("REDIS_URL", default=app.config.get('REDIS_URL'))
+    broker=app.config.get('REDIS_URL'),
+    backend=app.config.get('REDIS_URL')
 )
 celery.conf.update(app.config)
 celery.autodiscover_tasks()
@@ -32,5 +32,5 @@ migrate = Migrate(app, db)
 #from API import APIblueprint
 #app.register_blueprint(APIblueprint)
 
-from .views import *
+#from .views import *
 from .routing import *

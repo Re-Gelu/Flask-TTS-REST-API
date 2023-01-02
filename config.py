@@ -11,24 +11,24 @@ class BaseConfig:
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
     
-    REDIS_URL = 'redis://localhost:6379/0'
-    
-    CELERY_BROKER_URL = REDIS_URL
-    CELERY_RESULT_BACKEND = REDIS_URL
-    
     TIMEZONE = 'Europe/Moscow'
     
-    MAIL_SERVER = 'smtp.googlemail.com'
+    """ MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'mailL@mail.com'
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'password'
-    MAIL_DEFAULT_SENDER = MAIL_USERNAME
+    MAIL_DEFAULT_SENDER = MAIL_USERNAME """
 
 
 class DevelopementConfig(BaseConfig):
     DEBUG = True
     ENV = 'development'
+    
+    REDIS_URL = 'redis://localhost:6379'
+
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
     
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEVELOPMENT_DATABASE_URI') or "sqlite:///project.db"
 
@@ -43,5 +43,10 @@ class TestingConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
     DEBUG = False
     ENV = 'production'
+    
+    REDIS_URL = 'redis://redis:6379/0'
+    
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
     
     SQLALCHEMY_DATABASE_URI = os.environ.get('PRODUCTION_DATABASE_URI') or "sqlite:///project.db"
