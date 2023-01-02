@@ -6,7 +6,7 @@ import pyttsx3
 import os
 
 
-class TextToVoice:
+class TextToSpeech:
     __engine = pyttsx3.init()
     __voices = __engine.getProperty('voices')
     __voice_rate: int = 200
@@ -221,6 +221,6 @@ if __name__ == "__main__":
     print(" ")
 
     #ttv = TextToVoice(file_path=file_path)
-    ttv = TextToVoice(text="Я ебал твой рот наоборот!")
+    ttv = TextToSpeech(text="Я ебал твой рот наоборот!")
     ttv.save()
     print("[+] Success!")
