@@ -1,7 +1,13 @@
 from flask_restful import Resource
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from .app import app
 
+@app.route('/')
+def index():
+    context = {
+        "site_map": app.url_map
+    }
+    return render_template('index.html', context=context)
 
 class HelloWorld(Resource):
     def get(self):
@@ -21,18 +27,5 @@ class TodoSimple(Resource):
         return {todo_id: todos[todo_id]}
 
 
-
-""" from flask import render_template, request
-from app import app
-
-@app.route("/")
-def index():
-    context = {
-        "csrf_token": app.url_map,
-    }
-    return render_template("index.html", context=context)
-
-
-@app.route("/profile/<username>")
-def profile(username: str):
-    return f"Profile: {username}" """
+""" class TextToVoiceAPI(Resource):
+    def get(self, todo_id): """

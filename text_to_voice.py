@@ -236,6 +236,5 @@ if __name__ == "__main__":
 
     #ttv = TextToVoice(file_path=file_path)
     ttv = TextToVoice(text="Я ебал твой рот наоборот!")
-    #ttv.get_text_from_file()
-    ttv.voice_id = 0
     ttv.save()
+    print("[+] Success!")
