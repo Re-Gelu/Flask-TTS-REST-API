@@ -11,6 +11,13 @@ class BaseConfig:
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
     
+    REDIS_URL = 'redis://localhost:6379/0'
+    
+    CELERY_BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
+    
+    TIMEZONE = 'Europe/Moscow'
+    
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
