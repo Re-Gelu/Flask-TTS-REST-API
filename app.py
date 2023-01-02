@@ -8,7 +8,7 @@ from flask_restful import Api
 from flasgger import Swagger
 from celery import Celery
 import os
-import config
+from . import config
 
 # Flask app
 app = Flask(__name__)

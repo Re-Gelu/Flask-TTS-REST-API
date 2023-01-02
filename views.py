@@ -40,13 +40,18 @@ class TextToVoiceAPIView(Resource):
         args = parser.parse_args()
         file = args.get('file')
         
-        print(file)
-        
         # Save the file
         if file and self.is_allowed(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return jsonify(url_for('uploads', filename=filename))
+            file_save_path = os.path.join(f"{app.config['UPLOAD_FOLDER']}/texts", filename)
+            file.save(file_save_path)
+            
+            # Create task
+            task = text_to_voice_api_task.delay(
+                file_save_path=file_save_path
+            )
+            #return jsonify(url_for('uploads', filename=filename))
+            return {"task_id": task.id}, 202
 
         return jsonify(False)
         # curl -v -X POST -H "Content-Type: multipart/form-data" -F "file=@text.txt" http://localhost:5000/api/tts

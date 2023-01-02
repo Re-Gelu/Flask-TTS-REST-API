@@ -15,7 +15,7 @@ class TextToSpeech:
     __file_path: str = ""
     __save_path: str = ""
     
-    def __init__(self, file_path=None, text: str = None, save_path: str = None, voice_rate: int = None, voice_id: int = None):
+    def __init__(self, file_path=None, text: str = None, save_path: str = None, voice_rate: int = None, voice_id: int = None, autoconvert_file: bool = False):
         if file_path and text:
             raise Exception('Choose a file or a text string to pass in! Not both at the same time!')
         if file_path:
@@ -28,6 +28,8 @@ class TextToSpeech:
             self.voice_rate = voice_rate
         if voice_id:
             self.voice_id = voice_id
+        if file_path and autoconvert_file:
+            self.get_text_from_file()
         
     def get_text_from_file(self) -> str:
         """Get the text from the text file
@@ -215,12 +217,16 @@ class TextToSpeech:
             raise Exception('Voice rate must be >= 0 and <= 1000!')
 
 if __name__ == "__main__":
-    tprint("TEXT TO VOICE by Re:Gelu", font="Slant")
+    tprint("TEXT TO SPEECH by Re:Gelu", font="Slant")
 
-    file_path = input("Input file path: ")
-    print(" ")
+    #file_path = input("Input file path: ")
+    #print(" ")
 
-    #ttv = TextToVoice(file_path=file_path)
-    ttv = TextToSpeech(text="Я ебал твой рот наоборот!")
-    ttv.save()
+    tts = TextToSpeech(
+        file_path="text.txt",
+        save_path=os.path.join("uploads/audios/"),
+        autoconvert_file = True
+    )
+    #tts = TextToSpeech(text="Я ебал твой рот наоборот!")
+    tts.save()
     print("[+] Success!")
