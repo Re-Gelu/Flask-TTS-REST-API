@@ -2,6 +2,7 @@ Flask
 Flask-Migrate
 Flask-SQLAlchemy
 Flask-Limiter
+Flask-Caching
 flask-restful
 flask-debugtoolbar
 art
