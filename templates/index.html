@@ -10,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Title -->
-        <title>{% block title %}Base{% endblock title %}</title>
+        <title>{% block title %}Base template{% endblock title %}</title>
 
         <!-- Site icon -->
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='/images/favcon.png') }}">
@@ -52,7 +52,7 @@
             <nav class="container-fluid">
 
                 <!-- Left header block - Logo -->
-                <a href="/" class="navbar-brand logo ms-3">Base</a>
+                <a href="/" class="navbar-brand logo ms-3">Base template</a>
 
                 <!-- Navbar toggler -->
                 <button type="button" class="navbar-toggler text-black" data-bs-toggle="collapse"
@@ -85,7 +85,7 @@
             <!-- Wrapper content -->
             <div class="container">
                 {% block content %}
-                    <pre>{{context.csrf_token}}</pre>
+                    <pre>{{context.site_map}}</pre>
                 {% endblock content %}
             </div>
 
@@ -111,7 +111,7 @@
                 </div>	
             </div>
 
-            <div class="mt-4">© 2022 Base - Видео-чат на Django</div>
+            <div class="mt-4">© 2022 Base template - Flask</div>
             <sub class="text-colored float-end pt-4 pb-5 d-inline-flex">made by Re;Gelu
                 <div class="waves-container mx-3">
                     <div class="wave" style="--i: 1"></div>
