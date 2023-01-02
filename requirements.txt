@@ -9,3 +9,5 @@ chardet
 PyPDF2
 pyttsx3
 pathlib
+celery
+redis
