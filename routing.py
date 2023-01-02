@@ -1,6 +1,5 @@
 from .app import api
-from .views import *
+from . import views
 
-api.add_resource(HelloWorld, '/api')
-api.add_resource(TodoSimple, '/api/todo/<string:todo_id>/')
-api.add_resource(TaskRunnerView, '/api/tasks')
+api.add_resource(views.TaskRunnerView, '/api/tasks')
+api.add_resource(views.TextToVoiceAPIView, '/api/tts')

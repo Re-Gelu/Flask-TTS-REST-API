@@ -1,5 +1,9 @@
 from flask_restful import Resource
-from flask import request, jsonify, render_template
+from flask import request, jsonify, render_template, url_for
+from flask_restful import reqparse
+import werkzeug
+from werkzeug.utils import secure_filename
+import os
 from .app import app
 from .tasks import *
 
@@ -9,11 +13,6 @@ def index():
         "site_map": app.url_map
     }
     return render_template('index.html', context=context)
-
-class HelloWorld(Resource):
-    def get(self):
-        print(app.url_map)
-        return jsonify(["hello world"])
     
 
 class TaskRunnerView(Resource):
@@ -24,17 +23,30 @@ class TaskRunnerView(Resource):
         task = create_task.delay(int(task_type))
         return jsonify({"task_id": task.id})
 
-todos = {}
 
+class TextToVoiceAPIView(Resource):
+    
+    @staticmethod
+    def is_allowed(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config.get("ALLOWED_EXTENSIONS")
+           
+    def get(self):
+        return jsonify(True)
 
-class TodoSimple(Resource):
-    def get(self, todo_id):
-        return {todo_id: todos[todo_id]}
+    def post(self):
+        # Get the file from the post request
+        parser = reqparse.RequestParser()
+        parser.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files')
+        args = parser.parse_args()
+        file = args.get('file')
+        
+        print(file)
+        
+        # Save the file
+        if file and self.is_allowed(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return jsonify(url_for('uploads', filename=filename))
 
-    def put(self, todo_id):
-        todos[todo_id] = request.form['data']
-        return {todo_id: todos[todo_id]}
-
-
-""" class TextToVoiceAPI(Resource):
-    def get(self, todo_id): """
+        return jsonify(False)
+        # curl -v -X POST -H "Content-Type: multipart/form-data" -F "file=@text.txt" http://localhost:5000/api/tts

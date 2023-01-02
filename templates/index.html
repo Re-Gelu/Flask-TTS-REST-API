@@ -85,6 +85,16 @@
             <!-- Wrapper content -->
             <div class="container">
                 {% block content %}
+                    <form method=post enctype=multipart/form-data action="/api/tts" class=" my-3">
+                        <div class="form-file">
+                            <input type="file" class="form-file-input" id="file" name="file">
+                            <label class="form-file-label" for="file">
+                                <span class="form-file-text"></span>
+                                <span class="form-file-button"></span>
+                            </label>
+                        </div>
+                        <input class="mt-2 btn-sm btn-primary" type=submit value=Upload>
+                    </form>
                     <pre>{{context.site_map}}</pre>
                 {% endblock content %}
             </div>
