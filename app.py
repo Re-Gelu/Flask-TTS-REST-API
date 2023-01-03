@@ -8,20 +8,22 @@ from flask_restful import Api
 from flasgger import Swagger
 from celery import Celery
 import os
-from . import config
+import config
+
+flask_env_config = os.getenv('FLASK_ENV') or 'config.DevelopementConfig'
 
 # Flask app
 app = Flask(__name__)
-app.config.from_object(os.getenv('FLASK_ENV') or 'config.DevelopementConfig')
-app.add_url_rule("/uploads/<filename>", endpoint="uploads", build_only=True)
+app.config.from_object(flask_env_config)
 
 # Celery app
 celery = Celery(
-    app.name,
+    app.import_name,
     broker=app.config.get('REDIS_URL'),
     backend=app.config.get('REDIS_URL')
+    #backend='redis://localhost:6379/1'
 )
-celery.conf.update(app.config)
+celery.config_from_object(flask_env_config)
 celery.autodiscover_tasks()
 
 # Flask setup
@@ -36,4 +38,4 @@ cache = Cache(app)
 #app.register_blueprint(APIblueprint)
 
 #from .views import *
-from .routing import *
+from routing import *
