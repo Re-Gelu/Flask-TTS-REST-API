@@ -14,8 +14,9 @@ class TextToSpeech:
     text: str = ""
     __file_path: str = ""
     __save_path: str = ""
+    __file_save_name: str = "file"
     
-    def __init__(self, file_path=None, text: str = None, save_path: str = None, voice_rate: int = None, voice_id: int = None, autoconvert_file: bool = False):
+    def __init__(self, file_path=None, text: str = None, save_path: str = None, file_save_name: str = None, voice_rate: int = None, voice_id: int = None, autoconvert_file: bool = False):
         if file_path and text:
             raise Exception('Choose a file or a text string to pass in! Not both at the same time!')
         if file_path:
@@ -28,6 +29,8 @@ class TextToSpeech:
             self.voice_rate = voice_rate
         if voice_id:
             self.voice_id = voice_id
+        if file_save_name:
+            self.__file_save_name = file_save_name
         if file_path and autoconvert_file:
             self.get_text_from_file()
         
@@ -96,9 +99,8 @@ class TextToSpeech:
         Returns:
             str: Path to the mp3 file
         """        
-        if self.text: 
-            final_filename = "voice.mp3"
-            self.__save_path = self.__save_path + final_filename
+        if self.text:
+            self.__save_path = f"{self.__save_path}{self.__file_save_name}.mp3"
 
             # Преобразование в голос
             self.__engine.setProperty("rate", self.__voice_rate)  # Установка скорости чтения
@@ -107,7 +109,7 @@ class TextToSpeech:
             self.__engine.runAndWait()
 
             #print(f"[+] Done! Check - {os.path.abspath(final_filename)}")
-            return os.path.abspath(final_filename)
+            return self.__save_path
         else:
             raise Exception('No text string to save! Try to change `text` variable or use file methods!')
     
