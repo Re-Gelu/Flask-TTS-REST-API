@@ -7,3 +7,15 @@
 - Celery, Redis
 
 ## :package: [Зависимости проекта](https://github.com/Re-Gelu/Text-to-Speech-API/blob/master/requirements.txt)
+
+##  Celery
+
+- Команды 
+
+  ```
+    Windows:
+  $ celery -A app.celery worker --pool=solo --loglevel=info
+  
+    Linux:
+  $ celery -A app.celery worker --loglevel=info
+  ```
