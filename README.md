@@ -1,4 +1,4 @@
-# :poop: Проеки Text to Speech REST API на Flask
+# :poop: Проект Text to Speech REST API на Flask
 > Pet-проект. Создается в целях более лучшего изучения Flask :shipit:
 
 ## :triangular_ruler: Стек проекта: 
