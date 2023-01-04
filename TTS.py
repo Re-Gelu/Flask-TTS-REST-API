@@ -10,13 +10,14 @@ class TextToSpeech:
     __engine = pyttsx3.init()
     __voices = __engine.getProperty('voices')
     __voice_rate: int = 200
+    __voice_volume: float = 1.0
     __voice_id: int = 0
     text: str = ""
     __file_path: str = ""
     __save_path: str = ""
     __file_save_name: str = "file"
     
-    def __init__(self, file_path=None, text: str = None, save_path: str = None, file_save_name: str = None, voice_rate: int = None, voice_id: int = None, autoconvert_file: bool = False):
+    def __init__(self, file_path=None, text: str = None, save_path: str = None, file_save_name: str = None, voice_rate: int = None, voice_volume: float = None, voice_id: int = None, autoconvert_file: bool = False, driver_name=None):
         if file_path and text:
             raise Exception('Choose a file or a text string to pass in! Not both at the same time!')
         if file_path:
@@ -25,8 +26,12 @@ class TextToSpeech:
             self.text = text
         if save_path:
             self.save_path = save_path
+        if driver_name:
+            self.__engine = pyttsx3.init(driverName=driver_name)
         if voice_rate:
             self.voice_rate = voice_rate
+        if voice_volume:
+            self.voice_volume = voice_volume
         if voice_id:
             self.voice_id = voice_id
         if file_save_name:
@@ -217,6 +222,17 @@ class TextToSpeech:
             self.__voice_rate = value
         else:
             raise Exception('Voice rate must be >= 0 and <= 1000!')
+    
+    @property
+    def voice_volume(self):
+        return self.__voice_volume
+    
+    @voice_volume.setter
+    def voice_volume(self, value: float):
+        if 0.1 <= value <= 1.0:
+            self.__voice_volume = value
+        else:
+            raise Exception('Voice volume must be >= 0.1 and <= 1.0!')
 
 if __name__ == "__main__":
     tprint("TEXT TO SPEECH by Re:Gelu", font="Slant")
@@ -225,7 +241,8 @@ if __name__ == "__main__":
     #print(" ")
 
     tts = TextToSpeech(
-        file_path="text.txt",
+        #file_path="text.txt",
+        text="Привет это тестовый синтезатор речи",
         save_path=os.path.join("uploads/audios/"),
         autoconvert_file = True
     )
