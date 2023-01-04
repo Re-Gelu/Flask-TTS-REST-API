@@ -10,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
         <!-- Title -->
-        <title>{% block title %}Base template{% endblock title %}</title>
+        <title>{% block title %}Flask TTS REST API{% endblock title %}</title>
 
         <!-- Site icon -->
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='/images/favcon.png') }}">
@@ -34,6 +34,8 @@
         <!-- Jquery JS -->
         <script src="{{ url_for('static', filename='/js/jquery/jquery-3.6.1.js') }}"></script>
 
+        <script src="{{ url_for('static', filename='/js/scripts.js') }}"></script>
+
         <!-- CSRF token -->
         <script> var csrf_token = '{{ request.cookies.csrftoken }}'; </script>
 
@@ -52,7 +54,7 @@
             <nav class="container-fluid">
 
                 <!-- Left header block - Logo -->
-                <a href="/" class="navbar-brand logo ms-3">Base template</a>
+                <a href="/" class="navbar-brand logo ms-3">Flask TTS REST API</a>
 
                 <!-- Navbar toggler -->
                 <button type="button" class="navbar-toggler text-black" data-bs-toggle="collapse"
@@ -85,17 +87,28 @@
             <!-- Wrapper content -->
             <div class="container">
                 {% block content %}
-                    <form method=post enctype=multipart/form-data action="/api/tts" class=" my-3">
-                        <div class="form-file">
-                            <input type="file" class="form-file-input" id="file" name="file">
-                            <label class="form-file-label" for="file">
-                                <span class="form-file-text"></span>
-                                <span class="form-file-button"></span>
-                            </label>
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-md-6 col-12">
+                            <form method=post enctype=multipart/form-data class="my-3" id="uploadForm">
+                                <div class="my-3">
+                                    <label for="text" class="form-label">Введите текст или прикрепите файл: </label>
+                                    <textarea class="form-control" id="textInput" rows="7" name="text"></textarea>
+                                </div>
+                                <div class="form-file">
+                                    <input type="file" class="form-file-input" id="fileInput" name="file">
+                                    <label class="form-file-label" for="file">
+                                        <span class="form-file-text"></span>
+                                        <span class="form-file-button"></span>
+                                    </label>
+                                </div>
+                                <div class="d-inline-flex align-items-center mt-3" id="submitFormRow">
+                                    <input class="btn btn-primary" type=submit value="Отправить">
+                                    <a id="downloadResultLink" class="mx-4 my-auto" download></a>
+                                </div>
+                            </form>
+                            <pre>{{context.site_map}}</pre>
                         </div>
-                        <input class="mt-2 btn-sm btn-primary" type=submit value=Upload>
-                    </form>
-                    <pre>{{context.site_map}}</pre>
+                    </div>
                 {% endblock content %}
             </div>
 
@@ -121,7 +134,7 @@
                 </div>	
             </div>
 
-            <div class="mt-4">© 2022 Base template - Flask</div>
+            <div class="mt-4">© 2022 Flask TTS REST API - Nig</div>
             <sub class="text-colored float-end pt-4 pb-5 d-inline-flex">made by Re;Gelu
                 <div class="waves-container mx-3">
                     <div class="wave" style="--i: 1"></div>
