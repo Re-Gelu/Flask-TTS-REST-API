@@ -10,12 +10,14 @@
 
 ##  Celery
 
+Очередь задач работает на Redis. После POST запроса с файлом или текстом создаётся TTS задача Celery с переданными параметрами. Результат задачи "живёт" N секунд и возвращается сериализируемым под json (параметры CELERY_RESULT_EXPIRE_TIME и TASK_SERIALIZER в настройках проекта)
+
 - Команды 
 
-  ```
-    Windows:
-  $ celery -A app.celery worker --pool=solo --loglevel=info
-  
-    Linux:
-  $ celery -A app.celery worker --loglevel=info
-  ```
+```
+  Windows:
+$ celery -A app.celery worker --pool=solo --loglevel=info
+
+  Linux:
+$ celery -A app.celery worker --loglevel=info
+```
