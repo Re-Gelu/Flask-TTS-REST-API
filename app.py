@@ -20,8 +20,8 @@ app.config.from_object(flask_env_config)
 celery = Celery(
     app.import_name,
     broker=app.config.get('REDIS_URL'),
-    backend=app.config.get('REDIS_URL')
-    #backend='redis://localhost:6379/1'
+    backend=app.config.get('REDIS_URL'),
+    result_expires=app.config.get('CELERY_RESULT_EXPIRE_TIME')
 )
 celery.config_from_object(flask_env_config)
 celery.autodiscover_tasks()
@@ -34,8 +34,4 @@ cache = Cache(app)
 #swagger = Swagger(app)
 #toolbar = DebugToolbarExtension(app)
 
-#from API import APIblueprint
-#app.register_blueprint(APIblueprint)
-
-#from .views import *
 from routing import *
