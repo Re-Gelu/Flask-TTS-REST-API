@@ -1,5 +1,7 @@
-uploads/audios/
-uploads/texts/
+upload/audio/
+upload/text/
+download/audio/
+download/text/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
