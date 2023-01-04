@@ -1,7 +1,5 @@
-from app import api, app
+from app import api
 import views
 
-#app.add_url_rule("/uploads/audios/<filename>", endpoint="download_file", build_only=True)
-
-api.add_resource(views.TextToVoiceAPIViewPOST, '/api/tts')
-api.add_resource(views.TextToVoiceAPIViewGET, '/api/tts/<string:task_id>')
+api.add_resource(views.TextToVoiceAPIView, '/api/tts')
+api.add_resource(views.TaskResultAPIView, '/api/tts/<string:task_id>')

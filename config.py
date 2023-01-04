@@ -19,11 +19,27 @@ class BaseConfig:
     
     TEMPLATES_FOLDER = 'templates'
     
-    UPLOAD_FOLDER = 'uploads'
+    UPLOAD_FOLDER = 'upload'
+    
+    DOWNLOAD_FOLDER = 'download'
 
-    ALLOWED_EXTENSIONS = {'txt', 'pdf', 'rtf'}
+    ALLOWED_EXTENSIONS = ['txt', 'pdf', 'rtf']
 
     MAX_CONTENT_LENGTH = 24 * 1000 * 1000  # 24 Mb
+    
+    # Redis settings
+
+    REDIS_URL = 'redis://localhost:6379'
+    
+    # Celery settings
+
+    CELERY_BROKER_URL = REDIS_URL
+
+    RESULT_BACKEND = REDIS_URL
+
+    CELERY_RESULT_EXPIRE_TIME = 60 * 60 * 4  # 4 hours
+    
+    TASK_SERIALIZER = "json"
     
     # Timezone settings
     
@@ -34,6 +50,16 @@ class BaseConfig:
     CACHE_TYPE = "RedisCache"
     
     CACHE_DEFAULT_TIMEOUT = 500
+    
+    # TTS settings
+    
+    # Name of the pyttsx3.drivers module to load and use. Defaults to the best available driver for the platform, currently:
+
+    # sapi5 - SAPI5 on Windows
+    # nsss - NSSpeechSynthesizer on Mac OS X
+    # espeak - eSpeak on every other platform
+    
+    TTS_DRIVER_NAME = None
 
 class DevelopementConfig(BaseConfig):
     
@@ -46,13 +72,7 @@ class DevelopementConfig(BaseConfig):
     # Redis settings
     
     REDIS_URL = 'redis://localhost:6379'
-    
-    # Celery settings
 
-    CELERY_BROKER_URL = REDIS_URL
-    
-    CELERY_RESULT_BACKEND = REDIS_URL
-    
     # ORM settings
     
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEVELOPMENT_DATABASE_URI') or "sqlite:///project.db"
@@ -86,8 +106,8 @@ class ProductionConfig(BaseConfig):
     # Celery settings
     
     CELERY_BROKER_URL = REDIS_URL
-    
-    CELERY_RESULT_BACKEND = REDIS_URL
+
+    RESULT_BACKEND = REDIS_URL
     
     # ORM settings
     
