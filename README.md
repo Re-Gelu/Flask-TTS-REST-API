@@ -2,9 +2,9 @@
 > Pet-проект. Создается в целях более лучшего изучения Flask :shipit:
 
 ## :triangular_ruler: Стек проекта: 
-- Python 3.11 (Flask, Flask RESTful)
+- Python 3.11 (Flask, Flask RESTful, Celery)
 - HTML5, CSS (Bootstrap 5, UIkit), JS (jQuery)
-- Celery, Redis
+- Redis
 
 ## :package: [Зависимости проекта](https://github.com/Re-Gelu/Text-to-Speech-API/blob/master/requirements.txt)
 
