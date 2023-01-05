@@ -121,7 +121,7 @@ li:hover:not(#scroller-item), li:active:not(#scroller-item) {
 
 /* Header */
 
-#header {
+.header {
 	background: var(--header-background-color);
 	box-shadow: 0 0.2em 5px var(--shadow-color);
 }
@@ -171,7 +171,7 @@ a.logo:hover {
 
 /* Wrapper */
 
-#wrapper {
+.wrapper {
 	background-color: var(--wrapper-background-color);
 }
 
@@ -236,4 +236,13 @@ a.logo:hover {
 	50% {
 		transform: rotateX(45deg) translateY(0);
 	}
+}
+
+/* UIKit recolor */
+
+::-webkit-progress-value {
+	background-color: var(--main-color) !important;
+}
+::-moz-progress-bar {
+	background-color: var(--main-color) !important;
 }
