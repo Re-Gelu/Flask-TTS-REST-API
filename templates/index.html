@@ -34,8 +34,6 @@
         <!-- Jquery JS -->
         <script src="{{ url_for('static', filename='/js/jquery/jquery-3.6.1.js') }}"></script>
 
-        <script src="{{ url_for('static', filename='/js/scripts.js') }}"></script>
-
         <!-- CSRF token -->
         <script> var csrf_token = '{{ request.cookies.csrftoken }}'; </script>
 
@@ -45,68 +43,72 @@
 
         <!-- Bootstrap JS -->
         <script src="{{ url_for('static', filename='/js/bootstrap/bootstrap.bundle.min.js') }}" async></script>
+
+        <!-- JS -->
+        <script src="{{ url_for('static', filename='/js/scripts.js') }}" defer></script>
     </head>
 
     <body>
-
+        <div class="header container p-0 pb-5">
         <!-- Header --> 
-        <header id="header" class="navbar navbar-expand-xl sticky-top">    
-            <nav class="container-fluid">
+        <header id="header" class="header navbar navbar-expand-xl sticky-top">    
+            <nav class="container-fluid justify-content-center">
 
                 <!-- Left header block - Logo -->
-                <a href="/" class="navbar-brand logo ms-3">Flask TTS REST API</a>
-
-                <!-- Navbar toggler -->
-                <button type="button" class="navbar-toggler text-black" data-bs-toggle="collapse"
-                data-bs-target="#navbar-menu" aria-controls="navbar-menu" 
-                aria-expanded="false" aria-label="Переключатель навигации">
-                    <span class="ti-menu"></span>
-                </button>
-
-                <!-- Navigation menu -->
-                <div id="navbar-menu" class="navbar-collapse collapse">
-
-                    <hr class="d-xl-none border-top-colored"> 
-
-                    <ul class="navbar-nav top-nav-menu me-auto d-inline-flex">
-                        <li class="nav-item px-4">
-                            <a class="nav-link text-reset uk-button-text" aria-current="page" href="/">Домой</a>
-                        </li>
-                
-                    </ul>
-
-                    <hr class="d-xl-none border-top-colored">
-
-                </div>
+                <a href="/" class="navbar-brand logo">Flask TTS REST API</a>
             </nav>
         </header>
 
         <!-- Wrapper -->
-        <div id="wrapper" class="container-fluid">
+        <div id="wrapper" class="wrapper container-fluid">
 
             <!-- Wrapper content -->
             <div class="container">
                 {% block content %}
-                    <div class="row d-flex justify-content-center">
+                    <div class="row d-flex justify-content-center my-3">
                         <div class="col-md-6 col-12">
+
                             <form method=post enctype=multipart/form-data class="my-3" id="uploadForm">
+                                
+                                <div class="row">
+                                    <div class="col-md-4 col-12 my-3 my-md-0 uk-box-shadow-hover-medium">
+                                        <input class="uk-range" type="range" value="200" min="0" max="1000" step="10" uk-tooltip="Скорость речи" id="voiceRateRange" name="voice_rate">
+                                    </div>
+                                    <div class="col-md-4 col-12 my-3 my-md-0">
+                                        <select id="formVoiceSelect" class="form-select form-select-sm uk-box-shadow-hover-medium" aria-label=".form-select-sm example" uk-tooltip="Выбор голоса" id="voiceSelect" name="voice_id"></select>
+                                    </div>
+                                    <div class="col-md-4 col-12 my-3 my-md-0 uk-box-shadow-hover-medium">
+                                        <input class="uk-range" type="range" value="1.0" min="0.1" max="1.0" step="0.1" uk-tooltip="Громкость речи" id="voiceVolumeRange" name="voice_volume">
+                                    </div>
+                                </div>
+                                
                                 <div class="my-3">
                                     <label for="text" class="form-label">Введите текст или прикрепите файл: </label>
-                                    <textarea class="form-control" id="textInput" rows="7" name="text"></textarea>
+                                    <textarea class="uk-textarea rounded uk-box-shadow-hover-medium" id="textInput" rows="7" name="text"></textarea>
                                 </div>
-                                <div class="form-file">
-                                    <input type="file" class="form-file-input" id="fileInput" name="file">
-                                    <label class="form-file-label" for="file">
-                                        <span class="form-file-text"></span>
-                                        <span class="form-file-button"></span>
-                                    </label>
+
+                                <div class="js-upload uk-placeholder uk-text-center rounded uk-box-shadow-hover-medium uk-drag">
+                                    <i class="bi bi-file-earmark-arrow-up"></i>
+                                    <span class="uk-text-middle">Приложите файл, опустив его здесь или</span>
+                                    <div uk-form-custom>
+                                        <input type="file" id="file" name="file">
+                                        <span class="text-colored">здесь</span>
+                                    </div>
                                 </div>
-                                <div class="d-inline-flex align-items-center mt-3" id="submitFormRow">
-                                    <input class="btn btn-primary" type=submit value="Отправить">
+                                
+                                <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+
+                                <div id="APIerror" class="text-danger text-center mt-mb-3 mb-0"></div>
+
+
+                                <div class="d-inline-flex align-items-center mt-md-3 mt-0" id="submitFormRow">
+                                    <button  class="btn uk-button-text px-5 border-colored uk-box-shadow-hover-medium" type=submit>Отправить</button>
                                     <a id="downloadResultLink" class="mx-4 my-auto" download></a>
                                 </div>
                             </form>
-                            <pre>{{context.site_map}}</pre>
+
+                            <!-- <pre>{{context.site_map}}</pre> -->
+
                         </div>
                     </div>
                 {% endblock content %}
@@ -118,7 +120,7 @@
         </div>
 
         <!-- Footer -->
-        <footer class="container text-center my-5">
+        <footer class="container text-center my-5 px-5">
 
             <div class="row justify-content-center h-100">
                 <div class="col-5 my-auto p-0">
@@ -134,7 +136,7 @@
                 </div>	
             </div>
 
-            <div class="mt-4">© 2022 Flask TTS REST API - Nig</div>
+            <div class="mt-4">© 2022 - Flask TTS REST API</div>
             <sub class="text-colored float-end pt-4 pb-5 d-inline-flex">made by Re;Gelu
                 <div class="waves-container mx-3">
                     <div class="wave" style="--i: 1"></div>
@@ -160,7 +162,15 @@
                 </div>
             </sub>
         </footer>
-
+        </div>
     </body>
 
 </html>
+
+<!-- <div class="form-file">
+                                    <input type="file" class="form-file-input" id="fileInput" name="file">
+                                    <label class="form-file-label" for="file">
+                                        <span class="form-file-text"></span>
+                                        <span class="form-file-button"></span>
+                                    </label>
+                                </div> -->
