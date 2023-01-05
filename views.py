@@ -7,7 +7,6 @@ import werkzeug
 import pyttsx3
 import os
 from app import app
-from app import api
 from app import celery
 from tasks import *
 import datetime
@@ -64,15 +63,13 @@ class TextToVoiceAPIView(Resource):
     def get(self):
         return {
             "upload_args_names": ["file", "text", "voice_rate", "voice_volume", "voice_id"],
-            "voices_ids": [
+            "voices": [
                 {
-                    key: {
-                        "name": voice.name, 
-                        "languages": voice.languages, 
-                        "gender": voice.gender, 
-                        "age": voice.age
-                    }
-                } for key, voice in enumerate(pyttsx3.init().getProperty('voices'))
+                    "name": voice.name, 
+                    "languages": voice.languages, 
+                    "gender": voice.gender, 
+                    "age": voice.age
+                } for voice in pyttsx3.init().getProperty('voices')
             ],
             "allowed_extensions": app.config.get('ALLOWED_EXTENSIONS'),
             "task_statuses": ["PENDING", "STARTED", "RETRY", "FAILURE", "SUCCESS"],
@@ -82,15 +79,24 @@ class TextToVoiceAPIView(Resource):
         
 
     def post(self):
-        # Get the file, text and other tts args string from the post request
+        # Parse the file, text and other tts args from the post request
         parser = reqparse.RequestParser()
+        
         parser.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files')
+        parser.add_argument('text', type=str, location='form')
+        parser.add_argument('voice_rate', type=int, location='form')
+        parser.add_argument('voice_id', type=int, location='form')
+        parser.add_argument('voice_volume', type=float, location='form')
+        
         args = parser.parse_args()
+        
+        print(args)
+        
         file = args.get('file', None)
-        text = request.form.get('text', default=None)
-        voice_rate = int(request.form.get('voice_rate')) if request.form.get('voice_rate') else request.form.get('voice_rate', default=None)
-        voice_id = int(request.form.get('voice_id')) if request.form.get('voice_id') else request.form.get('voice_id', default=None)
-        voice_volume = float(request.form.get('voice_volume')) if request.form.get('voice_volume') else request.form.get('voice_volume', default=None)
+        text = args.get('text', None)
+        voice_rate = args.get('voice_rate', None)
+        voice_id = args.get('voice_id', None)
+        voice_volume = args.get('voice_volume', None)
         
         file_save_path = None
         
