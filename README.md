@@ -21,3 +21,5 @@ $ celery -A app.celery worker --pool=solo --loglevel=info
   Linux:
 $ celery -A app.celery worker --loglevel=info
 ```
+
+## work in progress...
