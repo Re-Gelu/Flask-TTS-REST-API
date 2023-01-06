@@ -9,6 +9,7 @@ art
 chardet
 PyPDF2
 pyttsx3
+TTS
 pathlib
 celery
 redis

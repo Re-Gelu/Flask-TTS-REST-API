@@ -2,6 +2,7 @@ from pathlib import Path
 from chardet import UniversalDetector
 from art import tprint
 from PyPDF2 import PdfFileReader
+from TTS.api import TTS
 import pyttsx3
 import os
 
@@ -16,8 +17,13 @@ class TextToSpeech:
     __file_path: str = ""
     __save_path: str = ""
     __file_save_name: str = "file"
+    __use_AI_method: bool = False
     
-    def __init__(self, file_path=None, text: str = None, save_path: str = None, file_save_name: str = None, voice_rate: int = None, voice_volume: float = None, voice_id: int = None, autoconvert_file: bool = False, driver_name=None):
+    def __init__(self, file_path=None, text: str = None, save_path: str = None, 
+                 file_save_name: str = None, voice_rate: int = None, 
+                 voice_volume: float = None, voice_id: int = None, 
+                 use_AI_method: bool = False, AI_model_id: int = 7, 
+                 use_AI_GPU: bool = False, autoconvert_file: bool = False, driver_name=None):
         if file_path and text:
             raise Exception('Choose a file or a text string to pass in! Not both at the same time!')
         if file_path:
@@ -38,6 +44,10 @@ class TextToSpeech:
             self.__file_save_name = file_save_name
         if file_path and autoconvert_file:
             self.get_text_from_file()
+        if use_AI_method:
+            self.__use_AI_method = use_AI_method
+            self.__AI_model_id = AI_model_id
+            self.__use_AI_GPU = use_AI_GPU
         
     def get_text_from_file(self) -> str:
         """Get the text from the text file
@@ -51,46 +61,46 @@ class TextToSpeech:
         """        
         if self.__file_path:
             
-            match Path(self.__file_path).suffix:
+            file_suffux: str = Path(self.__file_path).suffix
                 
-                case ".txt" | ".rtf":
-                    # Определение кодировки
-                    detector = UniversalDetector()
-                    with open(self.__file_path, 'rb') as fh:
-                        for line in fh:
-                            detector.feed(line)
-                            if detector.done:
-                                break
-                        detector.close()
+            if file_suffux == ".txt" or ".rtf":
+                # Определение кодировки
+                detector = UniversalDetector()
+                with open(self.__file_path, 'rb') as fh:
+                    for line in fh:
+                        detector.feed(line)
+                        if detector.done:
+                            break
+                    detector.close()
 
-                    # Чтение файла
-                    with open(self.__file_path, "r", encoding=detector.result['encoding']) as filehandle:
-                        self.text = filehandle.read()
-                    self.text = self.text.replace("\n", " ")
+                # Чтение файла
+                with open(self.__file_path, "r", encoding=detector.result['encoding']) as filehandle:
+                    self.text = filehandle.read()
+                self.text = self.text.replace("\n", " ")
 
-                    return self.text
-                
-                case ".pdf":
-                    # Работа с PDF форматом
+                return self.text
+            
+            elif file_suffux == ".pdf":
+                # Работа с PDF форматом
 
-                    # Чтение файла
-                    with open(self.__file_path, "rb") as filehandle:
-                        pdf = PdfFileReader(filehandle)
+                # Чтение файла
+                with open(self.__file_path, "rb") as filehandle:
+                    pdf = PdfFileReader(filehandle)
 
-                        self.pdf_document_info = pdf.getDocumentInfo()
+                    self.pdf_document_info = pdf.getDocumentInfo()
 
-                        self.text = ""
+                    self.text = ""
 
-                        for page_number in range(pdf.numPages):
-                            pdf_page = pdf.getPage(page_number)
-                            self.text += pdf_page.extract_text()
+                    for page_number in range(pdf.numPages):
+                        pdf_page = pdf.getPage(page_number)
+                        self.text += pdf_page.extract_text()
 
-                    self.text = self.text.replace("\n", " ")
+                self.text = self.text.replace("\n", " ")
 
-                    return self.text
-                
-                case _:
-                    raise Exception('File format not supported!')
+                return self.text
+            
+            else:
+                raise Exception('File format not supported!')
             
         else:
             raise Exception('File path not found or not exsists! Try to change `file_path` variable.')
@@ -103,20 +113,29 @@ class TextToSpeech:
 
         Returns:
             str: Path to the mp3 file
-        """        
+        """
+        
+        save_path = f"{self.__save_path}{self.__file_save_name}.mp3"
+        
         if self.text:
-            self.__save_path = f"{self.__save_path}{self.__file_save_name}.mp3"
+            
+            if self.__use_AI_method:
+            
+                # Преобразование в голос при помощи AI
+                tts = TTS(model_name=TTS.list_models()[self.__AI_model_id], progress_bar=False, gpu=self.__use_AI_GPU)
+                tts.tts_to_file(text=self.text, file_path=save_path)
+            else:
 
-            # Преобразование в голос
-            self.__engine.setProperty("rate", self.__voice_rate)  # Установка скорости чтения
-            self.__engine.setProperty('voice', self.__voices[self.__voice_id].id)  # Установка голоса
-            self.__engine.save_to_file(self.text, self.__save_path)
-            self.__engine.runAndWait()
-
-            #print(f"[+] Done! Check - {os.path.abspath(final_filename)}")
-            return self.__save_path
+                # Преобразование в голос
+                self.__engine.setProperty("rate", self.__voice_rate)  # Установка скорости чтения
+                self.__engine.setProperty('voice', self.__voices[self.__voice_id].id)  # Установка голоса
+                self.__engine.save_to_file(self.text, save_path)
+                self.__engine.runAndWait()
+            
+            return save_path
         else:
             raise Exception('No text string to save! Try to change `text` variable or use file methods!')
+        
     
     @property
     def file_path(self) -> str:
@@ -242,10 +261,9 @@ if __name__ == "__main__":
 
     tts = TextToSpeech(
         #file_path="text.txt",
-        text="Привет это тестовый синтезатор речи",
-        save_path=os.path.join("uploads/audios/"),
-        autoconvert_file = True
+        text="Hi Andrew! Hello world!",
+        save_path=os.path.join("upload/audio/"),
+        autoconvert_file = True,
+        use_AI_method=True,
     )
-    #tts = TextToSpeech(text="Я ебал твой рот наоборот!")
-    tts.save()
-    print("[+] Success!")
+    print("[+] Success! Check: " + tts.save())

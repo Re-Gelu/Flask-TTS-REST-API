@@ -60,6 +60,10 @@ class BaseConfig:
     # espeak - eSpeak on every other platform
     
     TTS_DRIVER_NAME = None
+    
+    TTS_USE_AI_GPU = False
+    
+    TTS_AI_MODEL_ID = 7
 
 class DevelopementConfig(BaseConfig):
     

@@ -27,23 +27,24 @@ def download_file(filename):
 class TaskResultAPIView(Resource):
     
     def get(self, task_id: str):
-        task_result = celery.AsyncResult(task_id)
+        task = celery.AsyncResult(task_id)
         task_result_url = None
+        task_result = task.result if task.result else ''    
         
-        if '/' + task_result.result == url_for('download_file', filename=os.path.basename(task_result.result)):
-            task_result_url = f"{request.scheme}://{request.headers.get('HOST')}/{task_result.result}"
+        if f"/{task_result}" == url_for('download_file', filename=os.path.basename(task_result)):
+            task_result_url = f"{request.scheme}://{request.headers.get('HOST')}/{task.result}"
             
         return {
             "task_id": task_id,
-            "task_result": str(task_result.result),
+            "task_result": str(task.result) if task.result else None,
             "task_result_url": task_result_url,
-            "task_status": task_result.status,
-            "date_done": str(task_result.date_done),
-            "expires": str(task_result.date_done + datetime.timedelta(seconds=app.config.get('CELERY_RESULT_EXPIRE_TIME'))) if task_result.date_done else str(datetime.datetime.now()),
-            "task_retries": task_result.retries,
-            "is_successful": task_result.successful(),
-            "is_failed": task_result.failed(),
-            "is_ready": task_result.ready(),
+            "task_status": task.status,
+            "date_done": str(task.date_done) if task.date_done else None,
+            "expires": str(task.date_done + datetime.timedelta(seconds=app.config.get('CELERY_RESULT_EXPIRE_TIME'))) if task.date_done else str(datetime.datetime.now()),
+            "task_retries": task.retries,
+            "is_successful": task.successful(),
+            "is_failed": task.failed(),
+            "is_ready": task.ready(),
         }, 200
         
     def delete(self, task_id):
@@ -79,6 +80,7 @@ class TextToVoiceAPIView(Resource):
         
 
     def post(self):
+        
         # Parse the file, text and other tts args from the post request
         parser = reqparse.RequestParser()
         
@@ -87,16 +89,19 @@ class TextToVoiceAPIView(Resource):
         parser.add_argument('voice_rate', type=int, location='form')
         parser.add_argument('voice_id', type=int, location='form')
         parser.add_argument('voice_volume', type=float, location='form')
+        parser.add_argument('use_AI', type=bool, location='form')
         
         args = parser.parse_args()
         
-        print(args)
-        
         file = args.get('file', None)
         text = args.get('text', None)
-        voice_rate = args.get('voice_rate', None)
-        voice_id = args.get('voice_id', None)
-        voice_volume = args.get('voice_volume', None)
+        
+        task_args = {
+            "voice_rate": args.get('voice_rate', None),
+            "voice_id": args.get('voice_id', None),
+            "voice_volume": args.get('voice_volume', None),
+            "use_AI_method": args.get('use_AI', None)
+        }
         
         file_save_path = None
         
@@ -112,9 +117,7 @@ class TextToVoiceAPIView(Resource):
                 # Create task for file
                 task = text_to_voice_api_task.delay(
                     file_save_path=file_save_path,
-                    voice_rate=voice_rate,
-                    voice_id=voice_id,
-                    voice_volume=voice_volume
+                    **task_args
                 )
 
                 return {
@@ -132,9 +135,7 @@ class TextToVoiceAPIView(Resource):
                 # Create task for text
                 task = text_to_voice_api_task.delay(
                     text=text,
-                    voice_rate=voice_rate,
-                    voice_id=voice_id,
-                    voice_volume=voice_volume
+                    **task_args
                 )
 
                 return {

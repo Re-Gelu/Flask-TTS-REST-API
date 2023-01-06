@@ -246,3 +246,7 @@ a.logo:hover {
 ::-moz-progress-bar {
 	background-color: var(--main-color) !important;
 }
+
+#useAiCheckbox:checked {
+	background-color: var(--main-color) !important;
+}

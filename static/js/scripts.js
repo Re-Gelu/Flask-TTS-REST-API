@@ -34,12 +34,13 @@ const event_handler = (data) => {
     $('#downloadResultLink').html($('<div class="spinner-border" role="status"><span class="visually-hidden">Идёт обработка...</span></div>'))
 
     /* Get task info every 1 sec  */
-    setTimeout(() => {
+    const get_api_info_interval = setInterval( () => {
         $.getJSON(
             url =  data.task_url,
             success = (data) => {
-                if (data.task_status === 'SUCCESS') {
-                    if (data.task_result_url) {
+                if (data.is_ready) {
+                    if (data.task_result_url && data.is_successful) {
+                        clearInterval(get_api_info_interval)
                         $('#downloadResultLink').text("Скачать результат!");
                         $('#downloadResultLink').attr('href', data.task_result_url);
                     }

@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_caching import Cache
 from flask_restful import Api
-from flasgger import Swagger
+#from flasgger import Swagger
 from celery import Celery
 import os
 import config
