@@ -1,0 +1,51 @@
+version: "3"
+   
+services:
+
+  web: &web
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    command: >
+      sh -c "gunicorn app:app --bind 0.0.0.0:8000"
+    container_name: 'gunicorn_web'
+    environment:
+      - FLASK_ENV=config.ProductionConfig
+    volumes:
+      - static_volume:/home/app/web/static
+    expose:
+      - 5000
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - redis
+
+  nginx:
+    build: ./nginx
+    container_name: 'nginx'
+    restart: always
+    volumes:
+      - static_volume:/home/app/web/static
+    ports:
+      - 1337:50
+    depends_on:
+      - web
+
+  redis:
+    image: redis:7-alpine
+    container_name: 'redis'
+    restart: always
+
+  celery:
+    <<: *web
+    command: celery -A app.celery worker --loglevel=info
+    container_name: 'celery'
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - web
+      - redis
+
+volumes:
+
+  static_volume:

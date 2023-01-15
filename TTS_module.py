@@ -19,11 +19,11 @@ class TextToSpeech:
     __file_save_name: str = "file"
     __use_AI_method: bool = False
     
-    def __init__(self, file_path=None, text: str = None, save_path: str = None, 
+    def __init__(self, file_path: str = None, text: str = None, save_path: str = None, 
                  file_save_name: str = None, voice_rate: int = None, 
                  voice_volume: float = None, voice_id: int = None, 
                  use_AI_method: bool = False, AI_model_id: int = 7, 
-                 use_AI_GPU: bool = False, autoconvert_file: bool = False, driver_name=None):
+                 use_AI_GPU: bool = False, autoconvert_file: bool = False, driver_name: str = None):
         if file_path and text:
             raise Exception('Choose a file or a text string to pass in! Not both at the same time!')
         if file_path:
