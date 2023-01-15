@@ -2,7 +2,7 @@
 > Pet-проект. Создается в целях более лучшего изучения Flask :shipit:
 
 ## :triangular_ruler: Стек проекта: 
-- Python 3.11 (Flask, Flask RESTful, Celery)
+- Python 3.9.12 (Flask, Flask RESTful, Celery)
 - HTML5, CSS (Bootstrap 5, UIkit), JS (jQuery)
 - Redis
 
@@ -21,3 +21,5 @@ $ celery -A app.celery worker --pool=solo --loglevel=info
   Linux:
 $ celery -A app.celery worker --loglevel=info
 ```
+
+## work in progress...
