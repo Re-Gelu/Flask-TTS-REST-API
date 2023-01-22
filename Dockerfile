@@ -43,9 +43,11 @@ WORKDIR $APP_HOME
 
 # install dependencies
 RUN apk update && apk add libpq && apk add g++
+RUN make system-deps
+RUN make install
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
-RUN pip install torchaudio
+#RUN pip install torchaudio
 RUN pip install --no-cache /wheels/*
 
 # copy project

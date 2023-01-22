@@ -5,12 +5,10 @@ services:
   web: &web
     build:
       context: ./
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     command: >
       sh -c "gunicorn app:app --bind 0.0.0.0:8000"
     container_name: 'gunicorn_web'
-    environment:
-      - FLASK_ENV=config.ProductionConfig
     volumes:
       - static_volume:/home/app/web/static
     expose:
