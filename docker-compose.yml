@@ -2,7 +2,7 @@ version: "3.3"
    
 services:
 
-  web: &web
+  web:
     build:
       context: ./
       dockerfile: Dockerfile
@@ -10,6 +10,7 @@ services:
       sh -c "gunicorn app:app --bind 0.0.0.0:8000"
     container_name: 'gunicorn_web'
     volumes:
+      - ./:/usr/src/app
       - static_volume:/home/app/web/static
     expose:
       - 5000
@@ -25,7 +26,7 @@ services:
     volumes:
       - static_volume:/home/app/web/static
     ports:
-      - 1337:50
+      - 1337:80
     depends_on:
       - web
 
@@ -35,11 +36,19 @@ services:
     restart: always
 
   celery:
-    <<: *web
-    command: celery -A app.celery worker --loglevel=info
+    command: celery -A app.celery worker --loglevel=info --logfile=logs/celery.log
     container_name: 'celery'
+    build:
+      context: ./
+    volumes:
+      - ./:/usr/src/app
     env_file:
       - ./.env.prod
+    environment:
+      - LC_ALL=C.UTF-8
+      - LANG=C.UTF-8
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
     depends_on:
       - web
       - redis
