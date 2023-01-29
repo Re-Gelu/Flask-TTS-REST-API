@@ -25,6 +25,7 @@ RUN apt-get install -y --no-install-recommends\
     python3-venv\
     python3-wheel\
     espeak\
+    libespeak-dev\
     libsndfile1-dev
 RUN rm -rf /var/lib/apt/lists/*
 RUN pip3 install llvmlite --ignore-installed

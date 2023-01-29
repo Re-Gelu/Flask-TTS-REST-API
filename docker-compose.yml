@@ -6,8 +6,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    command: >
-      sh -c "gunicorn app:app --bind 0.0.0.0:8000"
+    command: gunicorn app:app --bind 0.0.0.0:8000 --error-logfile ./logs/gunicorn/error.log --access-logfile ./logs/gunicorn/access.log --capture-output
     container_name: 'gunicorn_web'
     volumes:
       - ./:/usr/src/app
@@ -36,7 +35,7 @@ services:
     restart: always
 
   celery:
-    command: celery -A app.celery worker --loglevel=info --logfile=logs/celery.log
+    command: celery -A app.celery worker --loglevel=info --logfile=logs/celery/celery.log
     container_name: 'celery'
     build:
       context: ./
