@@ -105,7 +105,7 @@ class TextToVoiceAPIView(Resource):
         
         file_save_path = None
         
-        if text or file:
+        if (text or file) and task_args.get('task_args'):
             
             if file and self.is_allowed(file.filename):
                 

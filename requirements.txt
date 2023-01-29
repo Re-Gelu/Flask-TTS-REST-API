@@ -9,6 +9,8 @@ art
 chardet
 PyPDF2
 pyttsx3
+python-espeak 
+py-espeak-ng
 TTS
 pathlib
 celery
