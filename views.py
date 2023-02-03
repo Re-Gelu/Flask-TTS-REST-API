@@ -24,9 +24,60 @@ def download_file(filename):
 
 
 class TaskResultAPIView(Resource):
-    
+
     @cache.cached()
     def get(self, task_id: str):
+        """Get TTS task result by UUID
+        ---
+        parameters:
+            - name: task_id
+              in: path
+              type: string
+              format: uuid
+              required: true
+              description: Task UUID
+        responses:
+            200:
+                description: TTS task result
+                schema:
+                    type: object
+                    properties:
+                        task_id:
+                            type: string
+                            format: uuid
+                            description: UUID of the task
+                            default: all
+                        task_result:
+                            type: string
+                            default: all
+                        task_result_url:
+                            type: string
+                            format: uri
+                            description: URL to download the task result
+                        date_done:
+                            type: string
+                            format: date-time
+                        expires:
+                            type: integer
+                        task_status:
+                            type: string
+                            enum: ["PENDING", "STARTED", "RETRY", "FAILURE", "SUCCESS"]
+                            description: Task status from the list of possible options
+                        task_retries:
+                            type: integer
+                            description: Amount of retries (if task failed)
+                            default: 0
+                        is_successful:
+                            type: boolean
+                            default: true
+                        is_failed:
+                            type: boolean
+                            default: false
+                        is_ready:
+                            type: boolean
+                            default: true
+                
+        """
         task = celery.AsyncResult(task_id)
         task_result_url = None
         task_result = task.result if task.result else ''    
@@ -73,10 +124,12 @@ class TextToVoiceAPIView(Resource):
                     properties:
                         upload_args_names:
                             type: array
+                            description: List of possible arguments in POST request
                             items:
                                 type: string
                         voices:
                             type: array
+                            description: List of voices on the server
                             items:
                                 type: object
                                 properties:
@@ -91,17 +144,21 @@ class TextToVoiceAPIView(Resource):
                                     age:
                                         type: integer
                         allowed_extensions:
+                            description: List of extensions that can be used
                             type: array
                             items: 
                                 type: string
                                 enum: ["txt", "pdf"]
                         task_statuses:
+                            description: List of possible tasks statuses
                             type: array
                             items: 
                                 type: string
                         max_content_length:
+                            description: Maximum length of the request
                             type: integer
                         download_url:
+                            description: URL to use with task id
                             type: string
                             format: url
 
@@ -174,14 +231,20 @@ class TextToVoiceAPIView(Resource):
                         task_id:
                             type: string
                             format: uuid
+                            description: UUID of the task
+                            default: all
                         task_url:
                             type: string
                             format: uri
+                            description: URL to check the task result
                         task_status:
                             type: string
                             enum: ["PENDING", "STARTED", "RETRY", "FAILURE", "SUCCESS"]
+                            description: Task status from the list of possible options
                         task_retries:
                             type: integer
+                            description: Amount of retries (if task failed)
+                            default: 0
                         is_successful:
                             type: boolean
                             default: true
@@ -222,8 +285,6 @@ class TextToVoiceAPIView(Resource):
         parser.add_argument('use_AI', type=bool, location='form')
         
         args = parser.parse_args()
-        
-        print(args)
         
         file = args.get('file', None)
         text = args.get('text', None)

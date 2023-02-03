@@ -1,0 +1,290 @@
+{
+  "definitions": {},
+  "info": {
+    "description": "powered by Flasgger",
+    "termsOfService": "/tos",
+    "title": "A swagger API",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/api/tts": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Main API info",
+            "schema": {
+              "properties": {
+                "allowed_extensions": {
+                  "description": "List of extensions that can be used",
+                  "items": {
+                    "enum": [
+                      "txt",
+                      "pdf"
+                    ],
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "download_url": {
+                  "description": "URL to use with task id",
+                  "format": "url",
+                  "type": "string"
+                },
+                "max_content_length": {
+                  "description": "Maximum length of the request",
+                  "type": "integer"
+                },
+                "task_statuses": {
+                  "description": "List of possible tasks statuses",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "upload_args_names": {
+                  "description": "List of possible arguments in POST request",
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "voices": {
+                  "description": "List of voices on the server",
+                  "items": {
+                    "properties": {
+                      "age": {
+                        "type": "integer"
+                      },
+                      "gender": {
+                        "type": "string"
+                      },
+                      "languages": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Main API info"
+      },
+      "post": {
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "default": "all",
+            "description": "The uploaded text data",
+            "in": "formData",
+            "name": "text",
+            "type": "string"
+          },
+          {
+            "description": "The uploaded file data",
+            "in": "formData",
+            "name": "file",
+            "type": "file"
+          },
+          {
+            "default": 200,
+            "description": "TTS voice rate",
+            "in": "formData",
+            "maximum": 1000,
+            "minimum": 0,
+            "name": "voice_rate",
+            "type": "integer"
+          },
+          {
+            "default": 0,
+            "description": "TTS voice id from the list in GET response",
+            "in": "formData",
+            "maximum": 100,
+            "minimum": 0,
+            "name": "voice_id",
+            "type": "integer"
+          },
+          {
+            "default": 1.0,
+            "description": "TTS voice volume",
+            "format": "float",
+            "in": "formData",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "name": "voice_volume",
+            "type": "number"
+          },
+          {
+            "default": false,
+            "description": "Parameter to use the AI voice generation (not stable)",
+            "in": "formData",
+            "name": "use_AI",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "TTS task created successfully",
+            "schema": {
+              "properties": {
+                "is_failed": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "is_ready": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "is_successful": {
+                  "default": true,
+                  "type": "boolean"
+                },
+                "task_id": {
+                  "default": "all",
+                  "description": "UUID of the task",
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "task_retries": {
+                  "default": 0,
+                  "description": "Amount of retries (if task failed)",
+                  "type": "integer"
+                },
+                "task_status": {
+                  "description": "Task status from the list of possible options",
+                  "enum": [
+                    "PENDING",
+                    "STARTED",
+                    "RETRY",
+                    "FAILURE",
+                    "SUCCESS"
+                  ],
+                  "type": "string"
+                },
+                "task_url": {
+                  "description": "URL to check the task result",
+                  "format": "uri",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "400": {
+            "description": "TTS task creation failed",
+            "schema": {
+              "properties": {
+                "allowed_extensions": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                },
+                "error": {
+                  "type": "string"
+                },
+                "is_failed": {
+                  "default": true,
+                  "type": "boolean"
+                },
+                "is_successful": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Create TTS task"
+      }
+    },
+    "/api/tts/{task_id}": {
+      "get": {
+        "parameters": [
+          {
+            "description": "Task UUID",
+            "format": "uuid",
+            "in": "path",
+            "name": "task_id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TTS task result",
+            "schema": {
+              "properties": {
+                "date_done": {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                "expires": {
+                  "type": "integer"
+                },
+                "is_failed": {
+                  "default": false,
+                  "type": "boolean"
+                },
+                "is_ready": {
+                  "default": true,
+                  "type": "boolean"
+                },
+                "is_successful": {
+                  "default": true,
+                  "type": "boolean"
+                },
+                "task_id": {
+                  "default": "all",
+                  "description": "UUID of the task",
+                  "format": "uuid",
+                  "type": "string"
+                },
+                "task_result": {
+                  "default": "all",
+                  "type": "string"
+                },
+                "task_result_url": {
+                  "description": "URL to download the task result",
+                  "format": "uri",
+                  "type": "string"
+                },
+                "task_retries": {
+                  "default": 0,
+                  "description": "Amount of retries (if task failed)",
+                  "type": "integer"
+                },
+                "task_status": {
+                  "description": "Task status from the list of possible options",
+                  "enum": [
+                    "PENDING",
+                    "STARTED",
+                    "RETRY",
+                    "FAILURE",
+                    "SUCCESS"
+                  ],
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          }
+        },
+        "summary": "Get TTS task result by UUID"
+      }
+    }
+  },
+  "swagger": "2.0"
+}
