@@ -22,7 +22,7 @@ def text_to_voice_api_task(self, file_save_path: str = None, text: str = None, f
         "save_path": os.path.join(f"{app.config.get('DOWNLOAD_FOLDER')}/audio/"),
         "voice_rate": voice_rate,
         "voice_volume": voice_volume,
-        "voice_id": voice_id,
+        "voice_id": voice_id if voice_id is not None else 0,
         "autoconvert_file": autoconvert_file,
         "driver_name": app.config.get('TTS_DRIVER_NAME'),
         "use_AI_method": use_AI_method,

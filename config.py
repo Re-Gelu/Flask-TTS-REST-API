@@ -49,7 +49,7 @@ class BaseConfig:
     
     CACHE_TYPE = "RedisCache"
     
-    CACHE_DEFAULT_TIMEOUT = 500
+    CACHE_DEFAULT_TIMEOUT = 3600
     
     # TTS settings
     

@@ -1,0 +1,101 @@
+swagger: '2.0'
+info:
+  title: API Title
+  version: '1.0'
+host: 127.0.0.1:8080
+basePath: /
+schemes:
+  - http
+  - https
+paths:
+  /tts:
+    get:
+      responses:
+        "200":
+          description: Main API info
+          schema:
+            type: object
+            properties:
+              upload_args_names:
+                type: array
+                items:
+                  type: string
+              voices:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    languages:
+                      type: array
+                      items:
+                        type: string
+                    gender:
+                      type: string
+                    age:
+                      type: integer
+              allowed_extensions:
+                type: array
+                items:
+                  type: string
+              task_statuses:
+                type: array
+                items:
+                  type: string
+              max_content_length:
+                type: integer
+              download_url:
+                type: string
+                format: url
+    post:
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: text
+          in: formData
+          type: string
+          default: all
+        - name: file
+          in: formData
+          description: The uploaded file data
+          type: file
+        - name: voice_rate
+          in: formData
+          type: integer
+          format: int32
+          default: 200
+          minimum: 0
+          maximum: 1000
+        - name: voice_id
+          in: formData
+          type: integer
+          format: int32
+          default: 0
+          minimum: 0
+          maximum: 100
+        - name: voice_volume
+          in: formData
+          type: number
+          format: float
+          default: 1
+          minimum: 0
+          maximum: 1
+        - name: use_AI
+          in: formData
+          type: boolean
+          default: false
+      responses:
+        "202":
+          description: TTS task created successfully
+          schema:
+            type: object
+            properties:
+              upload_args_names:
+                type: array
+                items:
+                  type: string
+              voices:
+                type: array
+                items:
+                  type: object

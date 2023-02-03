@@ -8,24 +8,24 @@ import pyttsx3
 import os
 from app import app
 from app import celery
+from app import cache
 from tasks import *
 import datetime
 
 @app.route('/')
-def index():
-    context = {
-        "site_map": app.url_map
-    }
-    return render_template('index.html', context=context)
+@cache.cached()
+def index(): 
+    return render_template('index.html')
 
 
-@app.route('/download/audio/<filename>')
+@app.route('/download/audio/<path:filename>')
 def download_file(filename):
     return send_from_directory(f"{app.config['DOWNLOAD_FOLDER']}/audio", filename)
 
 
 class TaskResultAPIView(Resource):
     
+    @cache.cached()
     def get(self, task_id: str):
         task = celery.AsyncResult(task_id)
         task_result_url = None
@@ -61,7 +61,51 @@ class TextToVoiceAPIView(Resource):
     def is_allowed(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config.get("ALLOWED_EXTENSIONS")
     
+    @cache.cached()
     def get(self):
+        """Main API info
+        ---                 
+        responses:
+            200:
+                description: Main API info
+                schema:
+                    type: object
+                    properties:
+                        upload_args_names:
+                            type: array
+                            items:
+                                type: string
+                        voices:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    name:
+                                        type: string
+                                    languages:
+                                        type: array
+                                        items:
+                                            type: string
+                                    gender:
+                                        type: string
+                                    age:
+                                        type: integer
+                        allowed_extensions:
+                            type: array
+                            items: 
+                                type: string
+                                enum: ["txt", "pdf"]
+                        task_statuses:
+                            type: array
+                            items: 
+                                type: string
+                        max_content_length:
+                            type: integer
+                        download_url:
+                            type: string
+                            format: url
+
+        """
         return {
             "upload_args_names": ["file", "text", "voice_rate", "voice_volume", "voice_id"],
             "voices": [
@@ -80,7 +124,93 @@ class TextToVoiceAPIView(Resource):
         
 
     def post(self):
-        
+        """Create TTS task
+        ---
+        consumes:
+            - multipart/form-data
+        parameters:
+            - name: text
+              in: formData
+              type: string
+              default: all
+              description: The uploaded text data
+            - name: file
+              in: formData
+              description: The uploaded file data
+              type: file
+            - name: voice_rate
+              in: formData
+              type: integer
+              default: 200
+              minimum: 0
+              maximum: 1000
+              description: TTS voice rate
+            - name: voice_id
+              in: formData
+              type: integer
+              default: 0
+              minimum: 0
+              maximum: 100
+              description: TTS voice id from the list in GET response
+            - name: voice_volume
+              in: formData
+              type: number
+              format: float
+              default: 1.0
+              minimum: 0.0
+              maximum: 1.0
+              description: TTS voice volume
+            - name: use_AI
+              in: formData
+              type: boolean
+              default: false
+              description: Parameter to use the AI voice generation (not stable)
+        responses:
+            202:
+                description: TTS task created successfully
+                schema:
+                    type: object
+                    properties:
+                        task_id:
+                            type: string
+                            format: uuid
+                        task_url:
+                            type: string
+                            format: uri
+                        task_status:
+                            type: string
+                            enum: ["PENDING", "STARTED", "RETRY", "FAILURE", "SUCCESS"]
+                        task_retries:
+                            type: integer
+                        is_successful:
+                            type: boolean
+                            default: true
+                        is_failed:
+                            type: boolean
+                            default: false
+                        is_ready:
+                            type: boolean
+                            default: false
+            400: 
+                description: TTS task creation failed
+                schema:
+                    type: object
+                    properties:
+                        error:
+                            type: string
+                        allowed_extensions:
+                            type: array
+                            items: 
+                                type: string
+                        is_successful:
+                            type: boolean
+                            default: false
+                        is_failed:
+                            type: boolean
+                            default: true
+                            
+
+        """
         # Parse the file, text and other tts args from the post request
         parser = reqparse.RequestParser()
         
@@ -93,6 +223,8 @@ class TextToVoiceAPIView(Resource):
         
         args = parser.parse_args()
         
+        print(args)
+        
         file = args.get('file', None)
         text = args.get('text', None)
         
@@ -104,8 +236,8 @@ class TextToVoiceAPIView(Resource):
         }
         
         file_save_path = None
-        
-        if (text or file) and task_args.get('task_args'):
+        # and task_args.get('voice_id') is not None
+        if text or file:
             
             if file and self.is_allowed(file.filename):
                 

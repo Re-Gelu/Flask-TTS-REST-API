@@ -1,10 +1,11 @@
 Flask
 Flask-Migrate
 Flask-SQLAlchemy
-Flask-Limiter
+Flask-Limiter[redis]
 Flask-Caching
 flask-restful
 flask-debugtoolbar
+flasgger
 art
 chardet
 PyPDF2
