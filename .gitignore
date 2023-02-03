@@ -1,10 +1,10 @@
-upload/audio/
-upload/text/
-download/audio/
-download/text/
-logs/celery/
-logs/gunicorn/
-logs/nginx/
+upload/audio/*
+upload/text/*
+download/audio/*
+download/text/*
+logs/celery/*
+logs/gunicorn/*
+logs/nginx/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -121,7 +121,7 @@ ipython_config.py
 __pypackages__/
 
 # Celery stuff
-celerybeat-schedule
+celerybeat-schedule.*
 celerybeat.pid
 
 # SageMath parsed files

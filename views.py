@@ -303,8 +303,8 @@ class TextToVoiceAPIView(Resource):
             if file and self.is_allowed(file.filename):
                 
                 # Save the file
-                filename = secure_filename(file.filename)
-                file_save_path = os.path.join(f"{app.config['UPLOAD_FOLDER']}/text", filename)
+                #filename = secure_filename(file.filename)
+                file_save_path = os.path.join(f"{app.config['UPLOAD_FOLDER']}\\text", file.filename)
                 file.save(file_save_path)
                 
                 # Create task for file
