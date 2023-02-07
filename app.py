@@ -27,11 +27,11 @@ celery.config_from_object(flask_env_config)
 celery.autodiscover_tasks()
 
 # Flask setup
-api = Api(app)
+api = Api(app)  
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 cache = Cache(app)
-swagger = Swagger(app)
+swagger = Swagger(app, template_file='openapi.json')
 #toolbar = DebugToolbarExtension(app)
 
 from routing import *

@@ -4,14 +4,6 @@ from TTS_module import TextToSpeech
 from werkzeug.utils import secure_filename
 import time
 import os
-import shutil
-from pathlib import Path
-
-
-@celery.task(name="create_task")
-def create_task(task_type):
-    time.sleep(int(task_type) * 10)
-    return True
 
 
 @celery.task(name="text_to_voice_api_task", bind=True)
@@ -41,8 +33,14 @@ def text_to_voice_api_task(self, file_save_path: str = None, text: str = None, f
             )
             
             # Delete files after expiration time
-            delete_audio_file.apply_async(args=[f"{file_save_name}.mp3"], countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME'))
-            delete_text_file.apply_async(args=[file_save_path], countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME'))
+            delete_audio_file_task.apply_async(
+                args=[f"{file_save_name}.mp3"], 
+                countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME')
+            )
+            delete_text_file_task.apply_async(
+                args=[file_save_path], 
+                countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME')
+            )
             
             return tts.save()
         elif text:
@@ -52,7 +50,10 @@ def text_to_voice_api_task(self, file_save_path: str = None, text: str = None, f
             )
             
             # Delete file after expiration time
-            delete_audio_file.apply_async(args=[f"{file_save_name}.mp3"], countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME'))
+            delete_audio_file_task.apply_async(
+                args=[f"{file_save_name}.mp3"], 
+                countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME')
+            )
             
             return tts.save()
         else:
@@ -62,10 +63,13 @@ def text_to_voice_api_task(self, file_save_path: str = None, text: str = None, f
         return str(e)
 
 
-@celery.task
-def delete_audio_file(filename: str):
+@celery.task(name='delete_audio_file_task')
+def delete_audio_file_task(filename: str):
     os.remove(f"{os.path.dirname(os.path.abspath(__file__))}\\{app.config.get('DOWNLOAD_FOLDER')}\\audio\\{filename}")
+    return True
 
-@celery.task
-def delete_text_file(filename: str):
+
+@celery.task(name='delete_text_file_task')
+def delete_text_file_task(filename: str):
     os.remove(f"{os.path.dirname(os.path.abspath(__file__))}\\{filename}")
+    return True
