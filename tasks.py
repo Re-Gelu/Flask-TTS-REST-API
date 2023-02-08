@@ -32,13 +32,13 @@ def text_to_voice_api_task(self, file_save_path: str = None, text: str = None, f
                 **tts_settings
             )
             
-            # Delete files after expiration time
+            # Delete files after expiration time (args is filenames)
             delete_audio_file_task.apply_async(
                 args=[f"{file_save_name}.mp3"], 
                 countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME')
             )
             delete_text_file_task.apply_async(
-                args=[file_save_path], 
+                args=[os.path.split(file_save_path)[1]],
                 countdown=app.config.get('CELERY_RESULT_EXPIRE_TIME')
             )
             
@@ -71,5 +71,5 @@ def delete_audio_file_task(filename: str):
 
 @celery.task(name='delete_text_file_task')
 def delete_text_file_task(filename: str):
-    os.remove(f"{os.path.dirname(os.path.abspath(__file__))}\\{filename}")
+    os.remove(f"{os.path.dirname(os.path.abspath(__file__))}\\{app.config.get('UPLOAD_FOLDER')}\\text\\{filename}")
     return True
