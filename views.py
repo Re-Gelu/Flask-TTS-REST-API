@@ -69,7 +69,6 @@ class TextToVoiceAPIView(Resource):
         super(TextToVoiceAPIView, self).__init__()
     
     @staticmethod
-    @cache.cached()
     def is_allowed(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config.get("ALLOWED_EXTENSIONS")
     
