@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_caching import Cache
 from flask_restful import Api
+from flask_cors import CORS
 from flasgger import Swagger
 from celery import Celery
 import os
@@ -32,6 +33,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 cache = Cache(app)
 swagger = Swagger(app, template_file='openapi.json')
+cors = CORS(app)
 #toolbar = DebugToolbarExtension(app)
 
 from routing import *

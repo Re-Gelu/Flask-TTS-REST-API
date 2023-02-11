@@ -21,6 +21,26 @@
             ],
             "jinja": true,
             "justMyCode": true
+        },
+        {
+          "name": "Python: Celery",
+          "type": "python",
+          "request": "launch",
+          "module": "celery",
+          "args": ["-A", "app.celery", "worker", "--pool=solo", "--loglevel=info"],
+          "justMyCode": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Python: Flask / Celery",
+            "configurations": ["Python: Flask", "Python: Celery"],
+            "stopAll": true,
+            "presentation": {
+                "hidden": false,
+                "group": "",
+                "order": 0
+            }
         }
     ]
 }
