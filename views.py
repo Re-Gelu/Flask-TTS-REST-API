@@ -8,12 +8,13 @@ import os
 from app import app
 from app import celery
 from app import cache
+from app import limiter
 from tasks import *
 import datetime
 
 @app.route('/')
 @cache.cached()
-def index(): 
+def index():
     return render_template('index.html')
 
 
@@ -25,14 +26,15 @@ def download_file(filename):
 class TaskResultAPIView(Resource):
 
     @cache.cached()
+    @limiter.limit("1000/hour;10000/day")
     def get(self, task_id: str):
         task = celery.AsyncResult(task_id)
         task_result_url = None
-        task_result = task.result if task.result else ''    
-        
+        task_result = task.result if task.result else ''
+
         if f"/{task_result}" == url_for('download_file', filename=os.path.basename(task_result)):
             task_result_url = f"{request.scheme}://{request.headers.get('HOST')}/{task.result}"
-            
+
         return {
             "task_id": task_id,
             "task_result": str(task.result) if task.result else None,
@@ -45,7 +47,8 @@ class TaskResultAPIView(Resource):
             "is_failed": task.failed(),
             "is_ready": task.ready(),
         }, 200
-        
+
+    @limiter.limit("100/hour;1000/day")
     def delete(self, task_id):
         celery.control.revoke(task_id)
         return {
@@ -55,32 +58,33 @@ class TaskResultAPIView(Resource):
 
 
 class TextToVoiceAPIView(Resource):
-    
+
     def __init__(self):
         self.parser = reqparse.RequestParser()
-        
+
         self.parser.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files')
         self.parser.add_argument('text', type=str, location=['values', 'form'])
         self.parser.add_argument('voice_rate', type=int, location=['values', 'form'])
         self.parser.add_argument('voice_id', type=int, location=['values', 'form'])
         self.parser.add_argument('voice_volume', type=float, location=['values', 'form'])
         self.parser.add_argument('use_AI', type=bool, default=False, location=['values', 'form'])
-        
+
         super(TextToVoiceAPIView, self).__init__()
-    
+
     @staticmethod
     def is_allowed(filename):
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config.get("ALLOWED_EXTENSIONS")
-    
+
     @cache.cached()
+    @limiter.limit("1000/hour;10000/day")
     def get(self):
         return {
             "upload_args_names": ["file", "text", "voice_rate", "voice_volume", "voice_id"],
             "voices": [
                 {
-                    "name": voice.name, 
-                    "languages": voice.languages, 
-                    "gender": voice.gender, 
+                    "name": voice.name,
+                    "languages": voice.languages,
+                    "gender": voice.gender,
                     "age": voice.age
                 } for voice in pyttsx3.init().getProperty('voices')
             ],
@@ -89,33 +93,34 @@ class TextToVoiceAPIView(Resource):
             "max_content_length": app.config.get('MAX_CONTENT_LENGTH'),
             "download_url": f"{app.config.get('DOWNLOAD_FOLDER')}/audio/"
         }, 200
-        
 
     def post(self):
         # Parse the file, text and other tts args from the post request
         args = self.parser.parse_args()
-        
+
+        print(args)
+
         file = args.get('file', None)
         text = args.get('text', None)
-        
+
         task_args = {
             "voice_rate": args.get('voice_rate', None),
             "voice_id": args.get('voice_id', None),
             "voice_volume": args.get('voice_volume', None),
             "use_AI_method": args.get('use_AI', None)
         }
-        
+
         file_save_path = None
         # and task_args.get('voice_id') is not None
         if text or file:
-            
+
             if file and self.is_allowed(file.filename):
-                
+
                 # Save the file
                 #filename = secure_filename(file.filename)
                 file_save_path = os.path.join(f"{app.config['UPLOAD_FOLDER']}\\text", file.filename)
                 file.save(file_save_path)
-                
+
                 # Create task for file
                 task = text_to_voice_api_task.delay(
                     file_save_path=file_save_path,
@@ -131,9 +136,9 @@ class TextToVoiceAPIView(Resource):
                     "is_failed": task.failed(),
                     "is_ready": task.ready(),
                 }, 202
-                
+
             elif text:
-                
+
                 # Create task for text
                 task = text_to_voice_api_task.delay(
                     text=text,
@@ -149,9 +154,9 @@ class TextToVoiceAPIView(Resource):
                     "is_failed": task.failed(),
                     "is_ready": task.ready(),
                 }, 202
-                
+
             else:
-                
+
                 # If not file
                 return {
                     "error": "The file was not provided or the file extension is not supported!",
@@ -160,7 +165,7 @@ class TextToVoiceAPIView(Resource):
                     "is_failed": True,
                 }, 400
         else:
-            
+
             # If not the file and text
             return {
                 "error": "The text or file was not provided!",

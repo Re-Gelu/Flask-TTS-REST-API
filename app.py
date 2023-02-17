@@ -1,4 +1,3 @@
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -7,6 +6,8 @@ from flask_caching import Cache
 from flask_restful import Api
 from flask_cors import CORS
 from flasgger import Swagger
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from celery import Celery
 import os
 import config
@@ -28,12 +29,16 @@ celery.config_from_object(flask_env_config)
 celery.autodiscover_tasks()
 
 # Flask setup
-api = Api(app)  
+api = Api(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 cache = Cache(app)
 swagger = Swagger(app, template_file='openapi.json')
 cors = CORS(app)
+limiter = Limiter(
+    get_remote_address,
+    app=app
+)
 #toolbar = DebugToolbarExtension(app)
 
 from routing import *
