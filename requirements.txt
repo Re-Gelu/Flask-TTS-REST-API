@@ -5,12 +5,12 @@ Flask-Limiter[redis]
 Flask-Caching
 flask-restful
 flask-debugtoolbar
+flask-cors
 flasgger
 art
 chardet
 PyPDF2
 pyttsx3
-python-espeak 
 py-espeak-ng
 TTS
 pathlib
