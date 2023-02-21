@@ -1,5 +1,4 @@
 import os
-from celery.schedules import crontab
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -88,6 +87,12 @@ class DevelopementConfig(BaseConfig):
     # ORM settings
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEVELOPMENT_DATABASE_URI') or "sqlite:///project.db"
+    
+    # Flask limiter settings
+
+    RATELIMIT_STORAGE_URI = REDIS_URL
+
+    RATELIMIT_DEFAULT = "50000/day;50000/hour"
 
 
 class TestingConfig(BaseConfig):

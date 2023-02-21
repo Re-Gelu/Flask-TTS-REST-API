@@ -61,13 +61,21 @@ class TextToVoiceAPIView(Resource):
 
     def __init__(self):
         self.parser = reqparse.RequestParser()
-
+        
         self.parser.add_argument('file', type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument('text', type=str, location=['values', 'form'])
-        self.parser.add_argument('voice_rate', type=int, location=['values', 'form'])
-        self.parser.add_argument('voice_id', type=int, location=['values', 'form'])
-        self.parser.add_argument('voice_volume', type=float, location=['values', 'form'])
-        self.parser.add_argument('use_AI', type=bool, default=False, location=['values', 'form'])
+        
+        if request.is_json:
+            self.parser.add_argument('text', type=str, location=['values', 'json'])
+            self.parser.add_argument('voice_rate', type=int, location=['values', 'json'])
+            self.parser.add_argument('voice_id', type=int, location=['values', 'json'])
+            self.parser.add_argument('voice_volume', type=float, location=['values', 'json'])
+            self.parser.add_argument('use_AI', type=bool, default=False, location=['values', 'json'])
+        else:
+            self.parser.add_argument('text', type=str, location='form')
+            self.parser.add_argument('voice_rate', type=int, location='form')
+            self.parser.add_argument('voice_id', type=int, location='form')
+            self.parser.add_argument('voice_volume', type=float, location='form')
+            self.parser.add_argument('use_AI', type=bool, default=False, location='form')
 
         super(TextToVoiceAPIView, self).__init__()
 
