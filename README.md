@@ -1,9 +1,9 @@
-# :poop: Проект Text to Speech REST API на Flask
-> Pet-проект. Создается в целях более лучшего изучения Flask :shipit:
+# :poop: Проект Text to Speech REST API
+> Pet-проект. Создается в целях более лучшего изучения Flask и React :shipit:
 
 ## :triangular_ruler: Стек проекта: 
 - Python 3.9.12 (Flask, Flask RESTful, Celery)
-- HTML5, CSS (Bootstrap 5, UIkit), JS (jQuery)
+- HTML5, CSS (Bootstrap 5, UIkit), JS (React)
 - Redis
 
 ## :package: [Зависимости проекта](https://github.com/Re-Gelu/Text-to-Speech-API/blob/master/requirements.txt)
@@ -34,4 +34,4 @@ $ celery -A app.celery worker --pool=solo --loglevel=info
 $ celery -A app.celery worker --loglevel=info
 ```
 
-## work in progress...
+## :camera: Скрины проекта
