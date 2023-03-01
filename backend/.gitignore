@@ -1,10 +1,10 @@
-upload/audio/*
-upload/text/*
-download/audio/*
-download/text/*
-logs/celery/*
-logs/gunicorn/*
-logs/nginx/*
+upload/audio/*.mp3
+upload/text/*.txt
+download/audio/*.mp3
+download/text/*.txt
+logs/celery/*.log
+logs/gunicorn/*.log
+logs/nginx/*.log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

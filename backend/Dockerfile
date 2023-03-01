@@ -4,10 +4,10 @@ FROM nvidia/cuda:11.8.0-base-ubuntu22.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 # set work directory
-ENV APP_HOME=/usr/src/app
-WORKDIR $APP_HOME
+ENV BACKEND_APP_HOME=/usr/src/app/backend
+WORKDIR $BACKEND_APP_HOME
 
-COPY . $APP_HOME
+COPY . $BACKEND_APP_HOME
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -16,7 +16,7 @@ ENV PYTHONUNBUFFERED 1
 # install dependencies
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y --no-install-recommends\
-    gcc \
+    gcc\
     g++\ 
     make\
     python3\ 
@@ -32,4 +32,6 @@ RUN pip3 install llvmlite --ignore-installed
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
-EXPOSE 5000
+EXPOSE 8000
+
+RUN gunicorn app:app --bind 0.0.0.0:8000 --error-logfile ./logs/gunicorn/error.log --access-logfile ./logs/gunicorn/access.log --capture-output
