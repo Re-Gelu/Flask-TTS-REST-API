@@ -1,7 +1,7 @@
 upload/audio/*.mp3
-upload/text/*.txt
+upload/text/*
 download/audio/*.mp3
-download/text/*.txt
+download/text/*
 logs/celery/*.log
 logs/gunicorn/*.log
 logs/nginx/*.log
