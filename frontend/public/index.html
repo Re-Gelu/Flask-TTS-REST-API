@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="theme-color" content="#000000" />
+
+        <!-- Title -->
+        <title>Flask TTS REST API</title>
+
+        <!-- CSRF token -->
+        <script> var csrf_token = '{{ request.cookies.csrftoken }}'; </script>
+
+    </head>
+
+    <body>
+        <div class="header container p-0 pb-5">
+        <!-- Header --> 
+        <header id="header" class="header navbar navbar-expand-xl sticky-top">    
+            <nav class="container-fluid justify-content-center">
+
+                <!-- Left header block - Logo -->
+                <a href="/" class="navbar-brand logo">Flask TTS REST API</a>
+            </nav>
+        </header>
+
+        <!-- Wrapper -->
+        <div id="wrapper" class="wrapper container-fluid">
+
+            <!-- Wrapper content -->
+            <div class="container">
+                <div class="row d-flex justify-content-center my-3">
+                    <div id="root" class="col-md-6 col-12">
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back to top button -->
+            <a id="btn-back-to-top" href="#" type="button" class="btn btn-light position-fixed" uk-totop uk-scroll></a>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="container text-center my-5 px-5">
+
+            <div class="row justify-content-center h-100">
+                <div class="col-5 my-auto p-0">
+                    <hr class="text-black-50 my-0">
+                </div>
+
+                <div class="col-auto my-auto">
+                    <i class="bi bi-circle fs-4 opacity-25 my-0"></i>
+                </div>
+
+                <div class="col-5 my-auto p-0">
+                    <hr class="text-black-50 my-0">
+                </div>	
+            </div>
+
+            <div class="mt-4">© 2022 - Flask TTS REST API</div>
+            <sub class="text-colored float-end pt-4 pb-5 d-inline-flex">made by Re;Gelu
+                <div class="waves-container mx-3">
+<!--                     {% for i in range(20) %}
+                        <div class="wave" style="--i: {{i+1}}"></div>
+                    {% endfor %} -->
+                </div>
+            </sub>
+        </footer>
+        </div>
+    </body>
+
+</html>
