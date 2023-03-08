@@ -34,4 +34,4 @@ RUN pip3 install -r requirements.txt
 
 EXPOSE 8000
 
-RUN gunicorn app:app --bind 0.0.0.0:8000 --error-logfile ./logs/gunicorn/error.log --access-logfile ./logs/gunicorn/access.log --capture-output
+CMD gunicorn app:app --bind 0.0.0.0:8000 --error-logfile ./logs/gunicorn/error.log --access-logfile ./logs/gunicorn/access.log --capture-output

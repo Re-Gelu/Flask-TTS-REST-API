@@ -14,7 +14,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: 'frontend_react'
+    container_name: 'react_frontend'
     expose:
       - 3000
     depends_on:
